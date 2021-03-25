@@ -94,19 +94,21 @@ Soluções para o problema do C10K: Epoll e IO não bloqueante:
 	Além disso o fato de que é póssivel ter um 'aviso' de que alguma computação normalmente bloqueante está pronta
 	permite a construção de diversas abstrações para representar computações que não ocorrem de maneira sincrona. 
 
-	Em comapração com o apache, o servidor/proxy Nginx utiliza uma abordagem 
-	baseada em eventos com epoll(UNIX)/kqueue(BSD)/IOCP(Windows) e permite sem maiores dificuldades tantas 
-	conexões quanto o limite de file descriptiors do sistema. Uma unica instancia do nginx em um processador single
-	core padrão consegue facilmente lidar com centanas de milhares de conexões em uma unica thread.
+	Em comapração com o apache, o servidor/proxy Nginx utiliza uma abordagem baseada em loops de eventos com 
+	epoll(UNIX)/kqueue(BSD)/IOCP(Windows), permitindo sem maiores dificuldades tantas conexões quanto o limite de file descriptiors do sistema. 
+	Uma unica instancia do nginx em um processador single core padrão consegue facilmente lidar com centanas de milhares de conexões em uma unica thread.
 
 Concorrencia e funções assincronas: 
-	A api Epoll tem a caracteristica de transformar uma operação bloqueante em uma operação assincrona. 
 	Simplificadamente, funções assincronas represetam operações que tem (no minimo) no dois estados: Um estado de 'pendente'
 	e um estado de 'completa'. Ao realizar um chamado de função assincrona, a função inicia no estado pendente e imediatamente
 	retorna uma handle que permite consultar o seu estado atual. Quando a função completa sua operação longa e bloqueante, 
-	seu estado passa para 'completa', e o programa pode recuperar seu resultado.
-
-
+	seu estado passa para 'completa', e o programa pode recuperar seu resultado, sendo possivel então deferir a espera
+	do resultado da função para algum momento mais oportuno.
+	
+	A api Epoll tem a caracteristica de transformar uma operação bloqueante em uma operação assincrona, mas
+	é bom notar que o epoll é apenas uma parte e uma das diversas maneiras de implementar funções assincronas. 
+	É comum que o epoll seja utilizado como base de abstrações de nivel mais alto para funções assincronas como
+	tasks, promisses, futures , usermode threads (green threads) e corotinas. 
 
 Conclusão:
 
