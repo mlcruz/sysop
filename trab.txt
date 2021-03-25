@@ -66,7 +66,8 @@ Threads e suas limitações: Exemplo do apache HTTP server
         A dificuldade geral de conseguir atigir uma grande quantidade de conexões simultaneas em um unico servidor foi bem exemplificada
         na epoca pelo conhecido problema do C10K, que se trata do problema de conseguir gerenciar 10,000 conexões simultaneas em um unico
 	computador. Considerando que a 15 anos atŕas o apache era de longe o servidor mais popular, é possivel argumentar um dos fatores 
-	para esse problema era justamente o modelo de threads do apache.
+	para esse problema era justamente o modelo de threads do apache. É importante notar que hoje em dia o apache2.0 oferece outros modos
+	de operação que não são baseados em uma thread por usuario.
 
 Soluções para o problema do C10K: Epoll e IO não bloqueante:
 	Algumas soluções a nivel de sistema operacional foram desenvolvidas para lidar com o problema da concorrencia. 
@@ -83,19 +84,24 @@ Soluções para o problema do C10K: Epoll e IO não bloqueante:
 	    - epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout) -> Espera por qualquer um dos eventos registrados, com
 	um timeout opcional. Na ocorrencia de qualquer evento, a função retorna o dado passado na struct epoll_event.
 	
-	Com o epoll é possivel definir um conjunto de eventos (Ex: Socket pronta para leitura) que devem ser observados para 
+	Com o epoll é possivel definir um conjunto de eventos (Ex: socket pronta para leitura) que devem ser observados para 
 	cada file descriptor, e um dado a ser retornado quando esse evento ocorre. Por exemplo, podemos cadastrar para cada file descriptors
 	referentes as sockets abertas do computador um struct evento de "Pronto para leitura" com um ponteiro para o fd
-	que está pronto para a leitura dentro. E então de maneira em uma unica thread, executar em loop a função epoll_wait() para
-	processar sequencialmente conforme suas operações bloqueantes forem ficando disponiveis. 
+	que está pronto para a leitura dentro. E entãoem uma unica thread, executar em loop a função epoll_wait() para
+	processar sequencialmente toads os sockets conforme suas operações bloqueantes forem ficando disponiveis. 
 	
 	Sendo assim, o epoll permite que uma unica thread processe um numero muito grande de operações concorrentemente.
 	Além disso o fato de que é póssivel ter um 'aviso' de que alguma computação normalmente bloqueante está pronta
 	permite a construção de diversas abstrações para representar computações que não ocorrem de maneira sincrona. 
 
-	Em comapração com o apache utilizado como exemplo, o servidor/proxy Nginx utiliza uma abordagem 
-	baseada em eventos com epoll(UNIX)/kqueue(BSD)/IOCP(Windows) e :
+	Em comapração com o apache, o servidor/proxy Nginx utiliza uma abordagem 
+	baseada em eventos com epoll(UNIX)/kqueue(BSD)/IOCP(Windows) e permite sem maiores dificuldades tantas 
+	conexões quanto o limite de file descriptiors do sistema. Uma unica instancia do nginx em um processador single
+	core padrão consegue facilmente lidar com centanas de milhares de conexões em uma unica thread.
 
+Concorrencia e funções assincronas: 
 	
+
+Conclusão:
 
 
