@@ -35,7 +35,7 @@ Threads e suas limitações: Exemplo do apache HTTP server
         sites mais movimentados da internet. É importante notar que sendo um servidor web, ele tem a necessidade de 
         gerenciar milhares de conexões simultaneas, e isso involve abertura de um socket e suas respectivas operações
         de leitura e escrita e a ṕossivel leitura e escrita e execução de arquuivos em disco. t 
-        O apache oferece dois modos de funcionamento (Em sua versão 1.x):
+                O apache oferece dois modos de funcionamento (Em sua versão 1.x):
             1 - "(pre)forked" : O apache cria um novo processo por meio de um fork() para
             cada us
 
