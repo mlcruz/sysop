@@ -85,9 +85,9 @@ Soluções para o problema do C10K: Epoll e IO não bloqueante:
 	um timeout opcional. Na ocorrencia de qualquer evento, a função retorna o dado passado na struct epoll_event.
 	
 	Com o epoll é possivel definir um conjunto de eventos (Ex: socket pronta para leitura) que devem ser observados para 
-	cada file descriptor, e um dado a ser retornado quando esse evento ocorre. Por exemplo, podemos cadastrar para cada file descriptors
-	referentes as sockets abertas do computador um struct evento de "Pronto para leitura" com um ponteiro para o fd
-	que está pronto para a leitura dentro. E entãoem uma unica thread, executar em loop a função epoll_wait() para
+	cada file descriptor, e um dado a ser retornado quando esse evento ocorre. Por exemplo, podemos cadastrar para cada file descriptor
+	referente as sockets abertas do computador um struct evento de "Pronto para leitura" com um ponteiro para o fd
+	que está pronto para a leitura dentro. E então em uma unica thread, executar em loop a função epoll_wait() para
 	processar sequencialmente toads os sockets conforme suas operações bloqueantes forem ficando disponiveis. 
 	
 	Sendo assim, o epoll permite que uma unica thread processe um numero muito grande de operações concorrentemente.
@@ -100,7 +100,13 @@ Soluções para o problema do C10K: Epoll e IO não bloqueante:
 	core padrão consegue facilmente lidar com centanas de milhares de conexões em uma unica thread.
 
 Concorrencia e funções assincronas: 
-	
+	A api Epoll tem a caracteristica de transformar uma operação bloqueante em uma operação assincrona. 
+	Simplificadamente, funções assincronas represetam operações que tem (no minimo) no dois estados: Um estado de 'pendente'
+	e um estado de 'completa'. Ao realizar um chamado de função assincrona, a função inicia no estado pendente e imediatamente
+	retorna uma handle que permite consultar o seu estado atual. Quando a função completa sua operação longa e bloqueante, 
+	seu estado passa para 'completa', e o programa pode recuperar seu resultado.
+
+
 
 Conclusão:
 
