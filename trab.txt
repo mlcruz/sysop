@@ -42,5 +42,19 @@ Threads e suas limitações: Exemplo do apache HTTP server
 	    
 	    2 - "worker" ; O apache cria um novo processo, e cada processo pode ter diversas threads. E cada
 	    nova conexão é servida por uma thread dentro do processo, sendo uma conxão por thread
+	
+	De qualquer maneira, em ambos os seus modos o apache sempre executa uma thread por conexão. Sendo assim,
+	conforme o numéro de conexões simultaneas vai crecendo, o apache começa a sofrer dos seguintes problemas:
+
+	1) Por padrão, cada thread tem sua area de memoria para sua pilha (stack). O tamanho da pilha é configuravel,
+	mas alterações em seu tamanho padrão podem ter resultados desagradaveis (como por exemplo um limite de recursão menor).
+	Considerando que tamanho de pilha padrão nos sistemas operacionais modernos é de 2MB, um computador com 8GB seria capaz de
+	suportar somente 4.000 conexões simultaneas (menos, considerando que outros processo tambem estarão utilizando memoria). 
+
+	2) Dada a granda quantidade de threads, a quantidade de tempo perdida em trocas de contexto tende a ser 
+	extremamente alta, já que o numero de threads é muito superior ao numero de cores do processador. Além disso
+	a necessidade do compartilhamento e sincronização de memoria entre milhares de threads aumenta muito a chance
+	de possiveis deadlocks.
+
 
 
