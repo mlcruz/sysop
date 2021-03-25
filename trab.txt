@@ -1,4 +1,4 @@
-Titulo: Estudo em profundidade sobre sobre programação concorrente e paralela: Uma breve análise 
+Titulo: Estudo em profundidade sobre sobre programação concorrente: Uma breve análise 
 sobre abordagens modernas para programação concorrente e assincrona.
 
 
@@ -15,11 +15,28 @@ Introdução:
 Motivação:
         Na aula "O que é um thread" foi feita a seguinte pergunta: "Porquê ainda se ensina programação sequencial?".
         Acredito que esse é um excelente questionamento. Considerando os pontos levantados em aula a respeito do carater
-        cada vez mais paralelo dos softwares modernos e da inadequação do modelo puramente sequencial, a ideia desse trabalho
-        é levantar o questionamento: "Porquê ainda não se ensina programação assincrona?" e apresentar algumas possiveis 
-        abordagens modernas de programação assincrona, concorrente e/ou paralela.
+        cada vez mais paralelo dos softwares modernos e da inadequação do modelo puramente sequencial, a motivação desse trabalho
+        parte do questionamento: "Porquê ainda não se ensina programação assincrona?". Além disso, a intenção
+        é apresentar algumas possiveis  abordagens modernas de programação assincrona e concorrente. 
 
 
 
+
+Threads e suas limitações: Exemplo do apache HTTP server 
+
+        Para exemplificar algumas das limitações do uso de threads em situações onde
+        é necessario realizar um grande número de operações concorrentes e possivelmente bloqueantes
+        podemos estudar as limitações de um software que utiliza principalmente processos e 
+        threads em sua implementação: O apache HTTP server, ou someone apache. 
+
+        O apache é um software de código aberto que funciona como servidor web, executando
+        código ou hospedando arquivos estaticos e retornando os resultados para clientes conectados. 
+        O Apache, criado em 1995, ainda hoje é a opção mais popular de servidor, servindo aproximadamnete 25% dos
+        sites mais movimentados da internet. É importante notar que sendo um servidor web, ele tem a necessidade de 
+        gerenciar milhares de conexões simultaneas, e isso involve abertura de um socket e suas respectivas operações
+        de leitura e escrita e a ṕossivel leitura e escrita e execução de arquuivos em disco. 
+        O apache oferece dois modos de funcionamento (Em sua versão 1.x):
+            1 - "(pre)forked" : O apache cria um novo processo por meio de um fork() para
+            cada us
 
 
