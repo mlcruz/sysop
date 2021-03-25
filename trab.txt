@@ -108,7 +108,10 @@ Concorrencia e funções assincronas:
 	A api Epoll tem a caracteristica de transformar uma operação bloqueante em uma operação assincrona, mas
 	é bom notar que o epoll é apenas uma parte e uma das diversas maneiras de implementar funções assincronas. 
 	É comum que o epoll seja utilizado como base de abstrações de nivel mais alto para funções assincronas como
-	tasks, promisses, futures , usermode threads (green threads) e corotinas. 
+	tasks, promisses, futures, usermode threads (green threads) e corotinas. Além disso, normalmente funções assincronas
+	são executadas por um escalonador implementado no proprio programa programa em cima de uma threadpool com uma thread por 
+	core (2 com hyperthreading).  
+
 
 Conclusão:
 
