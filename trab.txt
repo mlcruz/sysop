@@ -1,12 +1,24 @@
 Titulo: Estudo em profundidade sobre sobre programação concorrente e paralela: Uma breve análise 
 sobre abordagens modernas para programação concorrente e assincrona.
 
-Introdução:
+
+Introdução: 
+        Hoje em dia é cada vez mais comum que sistemas operem de maneira concorrente e possivelmente
+        assincrona. Dos websites que precisar lidar com chamadas de api aos servidores que precisam
+        lidar com milhares de clientes conectados ao mesmo tempo, noções de técnicas modernas para lidar
+        com a complexidade de tais sistemas são extremente importantes no dia a dia do desenvolvedor. O objetivo
+        desse trabalho é apresentar alguns problemas comuns do uso de threads para programação concurrente e algumas 
+        de suas possiveis soluções, com um foco em problemas causados por operações bloqueantes de IO concurrentes. 
+        
+        
+
+Motivação:
         Na aula "O que é um thread" foi feita a seguinte pergunta: "Porquê ainda se ensina programação sequencial?".
         Acredito que esse é um excelente questionamento. Considerando os pontos levantados em aula a respeito do carater
         cada vez mais paralelo dos softwares modernos e da inadequação do modelo puramente sequencial, a ideia desse trabalho
         é levantar o questionamento: "Porquê ainda não se ensina programação assincrona?" e apresentar algumas possiveis 
-        abordagens modernas de programação assincrona.
+        abordagens modernas de programação assincrona, concorrente e/ou paralela.
+
 
 
 
