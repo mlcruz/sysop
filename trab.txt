@@ -60,13 +60,21 @@ Threads e suas limitações: Exemplo do apache HTTP server
 	cache misses vão ser muito mais comuns, principalmente pela questão da pilha das threads ocupar uma quantidade
 	relativamente grande de memoria.
 
-	A cerca de 15 anos atŕas o apache era de longe o servidor web mais comum, e no geral mesmo com computadores
-	poderosos era extremamente dificil conseguir gerenciar muitas conexões simultaneas com um servidor apache.
+	Sendo assim, mesmo com computadores poderosos era extremamente dificil conseguir gerenciar muitas conexões simultaneas com 
+	um servidor apache.
 
-O problema do C10K:
         A dificuldade geral de conseguir atigir uma grande quantidade de conexões simultaneas em um unico servidor foi bem exemplificada
         na epoca pelo conhecido problema do C10K, que se trata do problema de conseguir gerenciar 10,000 conexões simultaneas em um unico
-	computador.                                                                                              
+	computador. Considerando que a 15 anos atŕas o apache era de longe o servidor mais popular, é possivel argumentar um dos fatores 
+	para esse problema era justamente o modelo de threads do apache.
+
+Soluções para o problema do C10K: Epool - Kqueue - IOCP e IO não bloqueante:
+	Algumas soluções a nivel de sistema operacional foram desenvolvidas para lidar com o problema da concorrencia. 
+	No geral, a ideia é que o sistema operacional não vai suspenda a thread em operações de IO, em vez disso optando
+	por devolver imediatamente a quem chamou a função uma handle que permite verificar de alguma maneira se a operação
+	está pronta para ser executada de maneira não bloqueante.
+
+	No Unix e no 
 	
 
 
