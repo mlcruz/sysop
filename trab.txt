@@ -8,7 +8,7 @@ Introdução:
         lidar com milhares de clientes conectados ao mesmo tempo, noções de técnicas modernas para lidar
         com a complexidade de tais sistemas são extremente importantes no dia a dia do desenvolvedor. O objetivo
         desse trabalho é apresentar alguns problemas comuns do uso de threads para programação concurrente e algumas 
-        de suas possiveis soluções, com um foco em problemas causados por operações bloqueantes de IO concurrentes. 
+        de suas possiveis soluções, com um foco em problemas causados por operações bloqueantes de IO concorrentes. 
         
         
 
@@ -68,13 +68,23 @@ Threads e suas limitações: Exemplo do apache HTTP server
 	computador. Considerando que a 15 anos atŕas o apache era de longe o servidor mais popular, é possivel argumentar um dos fatores 
 	para esse problema era justamente o modelo de threads do apache.
 
-Soluções para o problema do C10K: Epool - Kqueue - IOCP e IO não bloqueante:
+Soluções para o problema do C10K: Epoll e IO não bloqueante:
 	Algumas soluções a nivel de sistema operacional foram desenvolvidas para lidar com o problema da concorrencia. 
 	No geral, a ideia é que o sistema operacional não vai suspenda a thread em operações de IO, em vez disso optando
 	por devolver imediatamente a quem chamou a função uma handle que permite verificar de alguma maneira se a operação
 	está pronta para ser executada de maneira não bloqueante.
 
-	No Unix e no 
+	No Unix para tal foi implementada a api epoll. epoll e suas operações relacionadas
+	relaciondas permitem registrar multiplos file descriptors para serem "observados":
+	    - epoll_create(u32 size) -> Cria uma nova instancia de um epoll. retorna um file descriptor referente a instancia criada
+	    - epoll_ctr(int epfd, int op, int fd, struct epoll_event *event) -> adiciona, modifica ou remove eventos em uma instancia
+	de epoll. epfd se refere a instancia do epoll, op a operação (adicionar, remover ou modificar), fd ao file descriptor que será observado
+	e *event a struct com os eventos a observar no file descriptor cadastrado e com o dado que deve ser retornada quando o evento ocorrer.
+	    - epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout) -> Espera por eventos 
+	
+	É possivel definir 
+	um conjunto de eventos (Ex: Socket pronta para leitura) que devem ser observados para cada file descripton
+
 	
 
 
