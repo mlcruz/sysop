@@ -1,0 +1,6 @@
+Titulo: Estudo em profundidade sobre sobre programação concorrente e paralela: Uma breve análise 
+sobre abordagens modernas para progração concorrente em escala.
+
+Introdução:
+        Na aula "O que é um thread"  
+        
