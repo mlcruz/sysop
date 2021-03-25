@@ -53,8 +53,14 @@ Threads e suas limitações: Exemplo do apache HTTP server
 
 	2) Dada a granda quantidade de threads, a quantidade de tempo perdida em trocas de contexto tende a ser 
 	extremamente alta, já que o numero de threads é muito superior ao numero de cores do processador. Além disso
-	a necessidade do compartilhamento e sincronização de memoria entre milhares de threads aumenta muito a chance
-	de possiveis deadlocks.
+	a necessidade do compartilhamento e sincronização de recursos (incluindo operações bloqueantes) entre milhares 
+	de threads aumenta muito a chance de possiveis deadlocks.
 
+	3) A efieciencia do cache do processador é prejudicada. Em uma situação de multiplas threads por core
+	cache misses vão ser muito mais comuns, principalmente pela questão da pilha das threads ocupar uma quantidade
+	relativamente grande de memoria.
 
+	A cerca de 15 anos atŕas o apache era de longe o servidor web mais comum, e no geral mesmo com computadores
+	poderosos era extremamente dificil conseguir passar da das 10.000 conexões simultaneas com um servidor apache. Essa
+	dificuldade geral de conseguir
 
