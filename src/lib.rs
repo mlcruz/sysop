@@ -1,4 +1,4 @@
-use std::{convert::TryInto, iter::repeat_with, time::Duration};
+use std::{convert::TryInto, iter::repeat_with, sync::atomic::AtomicBool, time::Duration};
 use tokio::time::sleep;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -20,7 +20,7 @@ impl Actor {
         }
     }
     #[allow(arithmetic_overflow)]
-    pub async fn handle_socket_async(&self, mut socket: TcpStream) {
+    pub async fn handle_socket_async(&self, mut socket: TcpStream, cancel_token: &AtomicBool) {
         let mut buf = [0u8; MSG_SIZE];
 
         loop {
@@ -33,29 +33,15 @@ impl Actor {
                 }
             };
 
-            // println!("{:?}", &buf);
-
-            sleep(Duration::from_millis(10)).await;
-
-            if let Err(e) = socket.write_all(&self.rand).await {
-                panic!("{}", e);
-            }
-
-            // println!("{:?}", self.rand);
             let mut multiplication_result = [0u8; MSG_SIZE];
 
             for i in 0..MSG_SIZE {
-                multiplication_result[i] = self.rand[i] * buf[i];
+                multiplication_result[i] = buf[i] ^ self.rand[i];
             }
 
-            sleep(Duration::from_millis(10)).await;
-
-            if let Err(e) = socket.write_all(&multiplication_result).await {
-                panic!("{}", e);
-            }
+            socket.write_all(&multiplication_result).await.unwrap();
 
             match socket.read(&mut buf).await {
-                // closed
                 Ok(n) if n == 0 => return,
                 Ok(n) => n,
                 Err(e) => {
@@ -63,13 +49,13 @@ impl Actor {
                 }
             };
 
-            // println!("{:?}", multiplication_result);
+            assert_eq!(buf, self.rand);
 
-            assert_eq!(buf, multiplication_result);
-
-            if let Err(e) = socket.write_all(&[0u8; MSG_SIZE]).await {
-                panic!("{}", e);
+            if cancel_token.load(std::sync::atomic::Ordering::SeqCst) == true {
+                buf[0] = 255;
             }
+
+            socket.write_all(&[0u8; MSG_SIZE]).await.unwrap();
         }
     }
 }
