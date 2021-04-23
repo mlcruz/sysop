@@ -12,6 +12,7 @@ static CONNECTIONS: AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 #[tokio::main]
 #[allow(arithmetic_overflow)]
 async fn main() {
+    sleep(Duration::from_secs(1)).await;
     let args = std::env::args().into_iter().collect::<Vec<_>>();
 
     let connection_count = args[1].parse::<usize>().unwrap();
