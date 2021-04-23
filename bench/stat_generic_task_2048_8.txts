@@ -1,24 +1,24 @@
-# started on Fri Apr 23 15:06:50 2021
+# started on Fri Apr 23 15:22:26 2021
 
 
  Performance counter stats for 'bench/tasks 60':
 
-          9,382.09 msec task-clock                #    0.156 CPUs utilized          
-           164,053      context-switches          #    0.017 M/sec                  
-            32,497      cpu-migrations            #    0.003 M/sec                  
-               231      page-faults               #    0.025 K/sec                  
-    11,923,306,991      cycles                    #    1.271 GHz                      (49.24%)
-     4,071,049,456      instructions              #    0.34  insn per cycle           (62.54%)
-       828,074,666      branches                  #   88.261 M/sec                    (62.59%)
-        48,702,995      branch-misses             #    5.88% of all branches          (63.33%)
-     1,227,586,080      L1-dcache-loads           #  130.844 M/sec                    (63.57%)
-       133,372,893      L1-dcache-load-misses     #   10.86% of all L1-dcache hits    (63.66%)
-        56,638,219      LLC-loads                 #    6.037 M/sec                    (48.65%)
-         9,417,050      LLC-load-misses           #   16.63% of all LL-cache hits     (48.96%)
+         18,563.51 msec task-clock                #    0.309 CPUs utilized          
+           223,858      context-switches          #    0.012 M/sec                  
+            39,559      cpu-migrations            #    0.002 M/sec                  
+               314      page-faults               #    0.017 K/sec                  
+    16,188,100,125      cycles                    #    0.872 GHz                      (50.02%)
+     7,139,990,946      instructions              #    0.44  insn per cycle           (62.46%)
+     1,458,220,185      branches                  #   78.553 M/sec                    (64.02%)
+        77,488,405      branch-misses             #    5.31% of all branches          (63.48%)
+     2,166,546,759      L1-dcache-loads           #  116.710 M/sec                    (63.22%)
+       209,920,636      L1-dcache-load-misses     #    9.69% of all L1-dcache hits    (62.20%)
+        84,375,849      LLC-loads                 #    4.545 M/sec                    (48.60%)
+         6,778,088      LLC-load-misses           #    8.03% of all LL-cache hits     (48.45%)
 
-      60.085048767 seconds time elapsed
+      60.104299214 seconds time elapsed
 
-       2.213650000 seconds user
-       8.914329000 seconds sys
+       4.163971000 seconds user
+      17.019001000 seconds sys
 
 
