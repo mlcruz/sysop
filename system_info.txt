@@ -1,0 +1,36 @@
+cache and TLB information (2):
+      0x63: data TLB: 2M/4M pages, 4-way, 32 entries
+            data TLB: 1G pages, 4-way, 4 entries
+      0x03: data TLB: 4K pages, 4-way, 64 entries
+      0x76: instruction TLB: 2M/4M pages, fully, 8 entries
+      0xff: cache data is in CPUID leaf 4
+      0xb5: instruction TLB: 4K, 8-way, 64 entries
+      0xf0: 64 byte prefetching
+      0xc3: L2 TLB: 4K/2M pages, 6-way, 1536 entries
+
+Machine (7891MB)
+  Package L#0 + L3 L#0 (4096KB)
+    L2 L#0 (256KB) + L1d L#0 (32KB) + L1i L#0 (32KB) + Core L#0
+      PU L#0 (P#0)
+      PU L#1 (P#2)
+    L2 L#1 (256KB) + L1d L#1 (32KB) + L1i L#1 (32KB) + Core L#1
+      PU L#2 (P#1)
+      PU L#3 (P#3)
+  HostBridge L#0
+    PCI 8086:1616
+      GPU L#0 "renderD128"    
+      GPU L#1 "controlD64"
+      GPU L#2 "card0"
+    PCIBridge
+      PCI 10ec:8168
+        Net L#3 "enp6s0"
+    PCIBridge
+      PCI 8086:095a
+        Net L#4 "wlp7s0"
+    PCIBridge
+      PCI 10de:1340
+        GPU L#5 "card1"
+        GPU L#6 "renderD129"
+        GPU L#7 "controlD65"
+    PCI 8086:9c83
+      Block(Disk) L#8 "sda"
