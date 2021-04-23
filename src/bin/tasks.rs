@@ -37,7 +37,6 @@ async fn main() {
 
     loop {
         if CANCELATION.load(std::sync::atomic::Ordering::SeqCst) {
-            sleep(Duration::from_millis(2000)).await;
             return ();
         }
 

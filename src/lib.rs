@@ -1,5 +1,4 @@
-use std::{convert::TryInto, iter::repeat_with, sync::atomic::AtomicBool, time::Duration};
-use tokio::time::sleep;
+use std::{convert::TryInto, iter::repeat_with, sync::atomic::AtomicBool};
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::TcpStream,
