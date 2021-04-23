@@ -1,4 +1,5 @@
 #! /bin/bash
+ulimit -SHn 65535
 cargo build --release --bin tasks 2> /dev/null 
 cargo build --release --bin tester 2> /dev/null
 sudo cp target/release/tasks bench/tasks 2> /dev/null

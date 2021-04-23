@@ -17,18 +17,21 @@ async fn main() {
 
     let connection_count = args[1].parse::<usize>().unwrap();
 
-    let mut curr_connections = 0u64;
     let sleep_time = 100;
 
     let mut tasks = vec![];
 
     while CONNECTIONS.load(std::sync::atomic::Ordering::SeqCst) < connection_count {
-        curr_connections += 1;
         tasks.push(tokio::spawn(async move {
             let mut stream = TcpStream::connect("127.0.0.1:9999").await.unwrap();
             CONNECTIONS.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
             let mut buf = [0u8; MSG_SIZE];
             let mut rand = [0u8; MSG_SIZE];
+
+            let curr_conn = CONNECTIONS.load(std::sync::atomic::Ordering::SeqCst);
+            if curr_conn == connection_count || curr_conn % ((connection_count / 25) + 1) == 0 {
+                println!("connected: {}", curr_conn);
+            }
 
             loop {
                 let msg: Vec<u8> = repeat_with(|| fastrand::u8(..)).take(MSG_SIZE).collect();
@@ -60,19 +63,9 @@ async fn main() {
                 assert_eq!(&buf, &[0u8; MSG_SIZE]);
                 sleep(Duration::from_millis(sleep_time * 6)).await;
             }
+
             CONNECTIONS.fetch_sub(1, std::sync::atomic::Ordering::SeqCst);
         }));
-
-        if curr_connections == connection_count as u64
-            || CONNECTIONS.load(std::sync::atomic::Ordering::SeqCst) % ((connection_count / 25) + 1)
-                == 0
-        {
-            println!("total connections: {}", curr_connections);
-            println!(
-                "connected: {}",
-                CONNECTIONS.load(std::sync::atomic::Ordering::SeqCst) + 1
-            );
-        }
 
         sleep(Duration::from_micros(200)).await;
     }
