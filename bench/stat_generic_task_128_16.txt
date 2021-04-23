@@ -1,0 +1,24 @@
+# started on Fri Apr 23 15:47:04 2021
+
+
+ Performance counter stats for 'bench/tasks 60':
+
+          2,322.49 msec task-clock                #    0.039 CPUs utilized          
+            24,427      context-switches          #    0.011 M/sec                  
+             6,151      cpu-migrations            #    0.003 M/sec                  
+               151      page-faults               #    0.065 K/sec                  
+     1,708,317,515      cycles                    #    0.736 GHz                      (48.78%)
+       606,719,888      instructions              #    0.36  insn per cycle           (59.89%)
+       124,422,629      branches                  #   53.573 M/sec                    (63.40%)
+        10,958,511      branch-misses             #    8.81% of all branches          (62.76%)
+       184,664,806      L1-dcache-loads           #   79.512 M/sec                    (64.18%)
+        21,099,123      L1-dcache-load-misses     #   11.43% of all L1-dcache hits    (62.98%)
+         9,934,275      LLC-loads                 #    4.277 M/sec                    (50.00%)
+           411,151      LLC-load-misses           #    4.14% of all LL-cache hits     (47.89%)
+
+      60.117364796 seconds time elapsed
+
+       0.566340000 seconds user
+       2.312232000 seconds sys
+
+
