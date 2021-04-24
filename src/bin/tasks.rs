@@ -24,7 +24,7 @@ async fn main() {
                 break;
             }
 
-            sleep(Duration::from_millis(1000)).await;
+            sleep(Duration::from_millis(2000)).await;
         }
     });
 
@@ -44,6 +44,6 @@ async fn main() {
     });
 
     timeout_task.await.unwrap();
-    println!("TaskTotalMsgs,{}", TOTAL_MSGS.load(Ordering::Relaxed));
+    println!("TaskTotalMsgs,{}", TOTAL_MSGS.load(Ordering::SeqCst));
     println!("TaskTotalConn,{}", TOTAL_CONN.load(Ordering::SeqCst));
 }

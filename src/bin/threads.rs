@@ -19,11 +19,11 @@ fn main() {
 
         loop {
             if timer.elapsed().as_millis() > timeout * 1000 {
-                CANCELATION.swap(true, Ordering::Relaxed);
+                CANCELATION.swap(true, Ordering::SeqCst);
                 break;
             }
 
-            std::thread::sleep(Duration::from_millis(1000));
+            std::thread::sleep(Duration::from_millis(2000));
         }
     });
 
@@ -39,6 +39,6 @@ fn main() {
     });
 
     timeout_thread.join().unwrap();
-    println!("ThreadsTotalMsgs: {}", TOTAL_MSGS.load(Ordering::Relaxed));
+    println!("ThreadsTotalMsgs: {}", TOTAL_MSGS.load(Ordering::SeqCst));
     println!("ThreadsTotalConn: {}", TOTAL_CONN.load(Ordering::SeqCst));
 }

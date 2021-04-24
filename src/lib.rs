@@ -39,7 +39,7 @@ impl Actor {
                     panic!("{}", e);
                 }
             };
-            total_msg_counter.fetch_add(1, Ordering::Relaxed);
+            total_msg_counter.fetch_add(1, Ordering::SeqCst);
 
             let mut multiplication_result = [0u8; MSG_SIZE];
 
@@ -48,7 +48,7 @@ impl Actor {
             }
 
             socket.write_all(&multiplication_result).unwrap();
-            total_msg_counter.fetch_add(1, Ordering::Relaxed);
+            total_msg_counter.fetch_add(1, Ordering::SeqCst);
 
             match socket.read(&mut buf) {
                 Ok(n) if n == 0 => return,
@@ -57,21 +57,21 @@ impl Actor {
                     panic!("{}", e);
                 }
             };
-            total_msg_counter.fetch_add(1, Ordering::Relaxed);
+            total_msg_counter.fetch_add(1, Ordering::SeqCst);
 
             assert_eq!(buf, self.rand);
 
             if cancel_token.load(Ordering::SeqCst) == true {
                 buf[0] = 255;
                 socket.write_all(&[0u8; MSG_SIZE]).unwrap();
-                total_msg_counter.fetch_add(1, Ordering::Relaxed);
+                total_msg_counter.fetch_add(1, Ordering::SeqCst);
                 socket.flush().unwrap();
 
                 return;
             }
 
             socket.write_all(&[0u8; MSG_SIZE]).unwrap();
-            total_msg_counter.fetch_add(1, Ordering::Relaxed);
+            total_msg_counter.fetch_add(1, Ordering::SeqCst);
         }
     }
 
@@ -93,7 +93,7 @@ impl Actor {
                     panic!("{}", e);
                 }
             };
-            total_msg_counter.fetch_add(1, Ordering::Relaxed);
+            total_msg_counter.fetch_add(1, Ordering::SeqCst);
 
             let mut multiplication_result = [0u8; MSG_SIZE];
 
@@ -102,7 +102,7 @@ impl Actor {
             }
 
             socket.write_all(&multiplication_result).await.unwrap();
-            total_msg_counter.fetch_add(1, Ordering::Relaxed);
+            total_msg_counter.fetch_add(1, Ordering::SeqCst);
 
             match socket.read(&mut buf).await {
                 Ok(n) if n == 0 => return,
@@ -111,21 +111,21 @@ impl Actor {
                     panic!("{}", e);
                 }
             };
-            total_msg_counter.fetch_add(1, Ordering::Relaxed);
+            total_msg_counter.fetch_add(1, Ordering::SeqCst);
 
             assert_eq!(buf, self.rand);
 
             if cancel_token.load(Ordering::SeqCst) == true {
                 buf[0] = 255;
                 socket.write_all(&[0u8; MSG_SIZE]).await.unwrap();
-                total_msg_counter.fetch_add(1, Ordering::Relaxed);
+                total_msg_counter.fetch_add(1, Ordering::SeqCst);
 
                 socket.flush().await.unwrap();
                 return;
             }
 
             socket.write_all(&[0u8; MSG_SIZE]).await.unwrap();
-            total_msg_counter.fetch_add(1, Ordering::Relaxed);
+            total_msg_counter.fetch_add(1, Ordering::SeqCst);
         }
     }
 }

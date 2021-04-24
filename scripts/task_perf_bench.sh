@@ -1,5 +1,7 @@
 #! /bin/bash
-scripts/generic_perf_task.sh 1 10 stat_generic_1_$1 >bench/stat_generic_task_1_total_msg.txt
+scripts/generic_perf_thread.sh 1 5 stat_generic_1_$1 >bench/stat_generic_threads_1_$_total_msg.txt
+scripts/generic_perf_task.sh 1 5 stat_generic_1_$1 >bench/stat_generic_tasks_1_$_total_msg.txt
+
 # scripts/generic_perf_task.sh 2 60 stat_generic_task_2_$1
 # scripts/generic_perf_task.sh 4 60 stat_generic_task_4_$1
 # scripts/generic_perf_task.sh 8 60 stat_generic_task_8_$1
