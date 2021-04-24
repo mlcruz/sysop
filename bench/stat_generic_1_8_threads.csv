@@ -1,0 +1,105 @@
+# started on Sat Apr 24 19:02:02 2021
+
+
+ Performance counter stats for 'bench/threads 10':
+
+         6,822,690      cycles                                                      
+         2,967,398      instructions              #    0.43  insn per cycle         
+           706,619      bus-cycles                                                  
+           426,320      cache-references                                            
+           126,586      cache-misses              #   29.693 % of all cache refs    
+
+      12.003508848 seconds time elapsed
+
+       0.000000000 seconds user
+       0.009785000 seconds sys
+
+
+# started on Sat Apr 24 19:02:19 2021
+
+
+ Performance counter stats for 'bench/threads 30':
+
+        13,279,866      cycles                                                      
+         4,775,529      instructions              #    0.36  insn per cycle         
+         1,512,383      bus-cycles                                                  
+                99      page-faults                                                 
+               135      cs                                                          
+
+      30.005210272 seconds time elapsed
+
+       0.000000000 seconds user
+       0.020157000 seconds sys
+
+
+# started on Sat Apr 24 19:02:54 2021
+
+
+ Performance counter stats for 'bench/threads 30':
+
+            72,823      LLC-loads                                                   
+            23,926      LLC-load-misses           #   32.86% of all LL-cache hits   
+         1,314,314      dTLB-loads                                                  
+            17,886      dTLB-load-misses          #    1.36% of all dTLB cache hits 
+   <not supported>      dTLB-prefetch-misses                                        
+
+      30.004777448 seconds time elapsed
+
+       0.000000000 seconds user
+       0.019180000 seconds sys
+
+
+# started on Sat Apr 24 19:03:29 2021
+
+
+ Performance counter stats for 'bench/threads 30':
+
+               101      faults                                                      
+               101      minor-faults                                                
+                 0      major-faults                                                
+           986,126      branch-instructions                                         
+            94,459      branch-misses             #    9.58% of all branches        
+
+      30.005178059 seconds time elapsed
+
+       0.000000000 seconds user
+       0.020092000 seconds sys
+
+
+# started on Sat Apr 24 19:04:04 2021
+
+
+ Performance counter stats for 'bench/threads 30':
+
+        12,856,445      cycles                                                        (61.73%)
+         5,200,994      instructions              #    0.40  insn per cycle           (64.35%)
+            77,621      LLC-loads                                                     (80.05%)
+            24,781      LLC-load-misses           #   31.93% of all LL-cache hits     (89.98%)
+             5,572      LLC-stores                                                    (29.97%)
+   <not supported>      LLC-prefetches                                              
+           804,758      cache-references                                              (31.18%)
+           228,412      cache-misses              #   28.383 % of all cache refs      (31.18%)
+
+      30.004602274 seconds time elapsed
+
+       0.000000000 seconds user
+       0.019877000 seconds sys
+
+
+# started on Sat Apr 24 19:04:39 2021
+
+
+ Performance counter stats for 'bench/threads 30':
+
+         2,132,523      L1-dcache-loads                                               (65.35%)
+           227,378      L1-dcache-load-misses     #   10.66% of all L1-dcache hits    (81.38%)
+         1,112,194      L1-dcache-stores                                              (94.15%)
+         1,235,250      cache-references                                              (91.50%)
+           248,018      cache-misses              #   20.078 % of all cache refs      (67.63%)
+
+      26.609867070 seconds time elapsed
+
+       0.003769000 seconds user
+       0.030158000 seconds sys
+
+
