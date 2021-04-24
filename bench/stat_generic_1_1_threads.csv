@@ -1,0 +1,27 @@
+# started on Sat Apr 24 17:23:58 2021
+
+
+ Performance counter stats for 'bench/threads 60':
+
+         6,272,659      cycles                                                        (48.46%)
+         2,033,887      instructions              #    0.32  insn per cycle           (97.19%)
+                62      cs                                                          
+           278,429      bus-cycles                                                  
+            80,897      cache-misses                                                
+           542,407      dTLB-loads                                                  
+             4,138      dTLB-load-misses          #    0.76% of all dTLB cache hits   (51.54%)
+     <not counted>      L1-dcache-loads                                               (0.00%)
+     <not counted>      L1-dcache-load-misses                                         (0.00%)
+     <not counted>      LLC-loads                                                     (0.00%)
+     <not counted>      LLC-load-misses                                               (0.00%)
+
+      60.012116204 seconds time elapsed
+
+       0.000000000 seconds user
+       0.006032000 seconds sys
+
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog

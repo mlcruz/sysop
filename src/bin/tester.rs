@@ -14,10 +14,11 @@ static CONNECTIONS: AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 async fn main() {
     sleep(Duration::from_secs(1)).await;
     let args = std::env::args().into_iter().collect::<Vec<_>>();
+    fastrand::seed(7);
 
     let connection_count = args[1].parse::<usize>().unwrap();
 
-    let sleep_time = 100;
+    let msg_interval = 100;
 
     let mut tasks = vec![];
 
@@ -37,11 +38,11 @@ async fn main() {
                 let msg: Vec<u8> = repeat_with(|| fastrand::u8(..)).take(MSG_SIZE).collect();
 
                 stream.write_all(&msg).await.unwrap();
-                sleep(Duration::from_millis(sleep_time)).await;
+                sleep(Duration::from_millis(msg_interval)).await;
 
                 // get rand (from server) * msg
                 stream.read_exact(&mut buf).await.unwrap();
-                sleep(Duration::from_millis(sleep_time)).await;
+                sleep(Duration::from_millis(msg_interval)).await;
 
                 let multiplication_result = buf.clone();
 
@@ -51,24 +52,23 @@ async fn main() {
 
                 // return rand
                 stream.write_all(&rand).await.unwrap();
-                sleep(Duration::from_millis(sleep_time)).await;
+                sleep(Duration::from_millis(msg_interval)).await;
 
-                println!("{:?}", &rand);
                 stream.read_exact(&mut buf).await.unwrap();
-                sleep(Duration::from_millis(sleep_time)).await;
+                sleep(Duration::from_millis(msg_interval)).await;
 
                 if buf.first().unwrap() == &255u8 {
                     break;
                 }
 
                 assert_eq!(&buf, &[0u8; MSG_SIZE]);
-                sleep(Duration::from_millis(sleep_time)).await;
+                sleep(Duration::from_millis(msg_interval)).await;
             }
 
             CONNECTIONS.fetch_sub(1, std::sync::atomic::Ordering::SeqCst);
         }));
 
-        sleep(Duration::from_micros(200)).await;
+        sleep(Duration::from_micros(100)).await;
     }
 
     futures::future::join_all(tasks).await;

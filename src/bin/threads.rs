@@ -4,9 +4,11 @@ use sysop::Actor;
 
 static CANCELATION: AtomicBool = AtomicBool::new(false);
 static TOTAL_MSGS: AtomicU64 = AtomicU64::new(0);
+static TOTAL_CONN: AtomicU64 = AtomicU64::new(0);
 
 fn main() {
     let args = std::env::args().into_iter().collect::<Vec<_>>();
+    fastrand::seed(7);
 
     let listener = std::net::TcpListener::bind("127.0.0.1:9999").unwrap();
 
@@ -32,9 +34,11 @@ fn main() {
             let actor = Actor::new();
 
             actor.handle_socket(socket, &CANCELATION, &TOTAL_MSGS);
+            TOTAL_CONN.fetch_add(1, Ordering::SeqCst);
         });
     });
 
     timeout_thread.join().unwrap();
-    println!("Total msgs: {}", TOTAL_MSGS.load(Ordering::Relaxed));
+    println!("ThreadsTotalMsgs: {}", TOTAL_MSGS.load(Ordering::Relaxed));
+    println!("ThreadsTotalConn: {}", TOTAL_CONN.load(Ordering::SeqCst));
 }
