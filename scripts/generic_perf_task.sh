@@ -20,7 +20,7 @@ sleep 5
 bench/tester $1 2>/dev/null >/dev/null &
 sudo perf stat \
     -e cycles,instructions,bus-cycles,cache-references,cache-misses \
-    -o bench/$3_tasks.csv \
+    -o bench/$3_tasks.csv -x, \
     bench/tasks 10
 sleep 5
 
@@ -36,7 +36,7 @@ sleep 5
 # TLB
 bench/tester $1 2>/dev/null >/dev/null &
 sudo perf stat \
-    -e LLC-loads,LLC-load-misses,dTLB-loads,dTLB-load-misses,dTLB-stores,dTLB-stores-misses \
+    -e dTLB-loads,dTLB-load-misses,dTLB-stores,dTLB-stores-misses \
     -o bench/$3_tasks.csv --append -x, \
     bench/tasks $2
 sleep 5
