@@ -53,6 +53,7 @@ async fn main() {
                 stream.write_all(&rand).await.unwrap();
                 sleep(Duration::from_millis(sleep_time)).await;
 
+                println!("{:?}", &rand);
                 stream.read_exact(&mut buf).await.unwrap();
                 sleep(Duration::from_millis(sleep_time)).await;
 
@@ -61,7 +62,7 @@ async fn main() {
                 }
 
                 assert_eq!(&buf, &[0u8; MSG_SIZE]);
-                sleep(Duration::from_millis(sleep_time * 6)).await;
+                sleep(Duration::from_millis(sleep_time)).await;
             }
 
             CONNECTIONS.fetch_sub(1, std::sync::atomic::Ordering::SeqCst);
