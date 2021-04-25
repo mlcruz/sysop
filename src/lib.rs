@@ -6,9 +6,9 @@ use tokio::{
     net::TcpStream,
 };
 
-// 2mb
-pub const MSG_SIZE: usize = 4 * 1024;
-pub const HEAP_MULT: usize = 512;
+// 512kb
+pub const MSG_SIZE: usize = 512;
+pub const HEAP_MULT: usize = 1024;
 
 #[repr(transparent)]
 pub struct Actor {

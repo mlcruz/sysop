@@ -45,9 +45,9 @@
 # scripts/generic_perf_thread.sh 4096 30 stat_generic_4096_$1 >bench/stat_generic_threads_4096_$1_total_msg.txt
 # scripts/generic_perf_task.sh 4096 30 stat_generic_4096_$1 >bench/stat_generic_tasks_4096_$1_total_msg.txt
 
-echo 8192
-scripts/generic_perf_thread.sh 8192 30 stat_generic_8192_$1 >bench/stat_generic_threads_8192_$1_total_msg.txt
-scripts/generic_perf_task.sh 8192 30 stat_generic_8192_$1 >bench/stat_generic_tasks_8192_$1_total_msg.txt
+# echo 8192
+# scripts/generic_perf_thread.sh 8192 30 stat_generic_8192_$1 >bench/stat_generic_threads_8192_$1_total_msg.txt
+# scripts/generic_perf_task.sh 8192 30 stat_generic_8192_$1 >bench/stat_generic_tasks_8192_$1_total_msg.txt
 
 # echo 16384
 # scripts/generic_perf_thread.sh 16384 30 stat_generic_16384_$1 >bench/stat_generic_threads_16384_$1_total_msg.txt
