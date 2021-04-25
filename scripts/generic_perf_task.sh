@@ -11,7 +11,7 @@ bench/tester $1 2>scripts/tester_error.log >/dev/null &
 sudo perf stat \
     -e cycles,instructions \
     -o /dev/null \
-    bench/tasks $2
+    bench/tasks 10
 
 sleep 5
 
@@ -21,7 +21,7 @@ bench/tester $1 2>scripts/tester_error.log >/dev/null &
 sudo perf stat \
     -e cycles,instructions,bus-cycles,cache-references,cache-misses \
     -o bench/$3_tasks.csv -x, \
-    bench/tasks 10
+    bench/tasks $2
 sleep 5
 
 # page faults, context switch
