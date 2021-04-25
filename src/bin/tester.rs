@@ -19,7 +19,7 @@ async fn main() {
 
     let connection_count = args[1].parse::<usize>().unwrap();
 
-    let msg_interval = 25;
+    let msg_interval = 100;
 
     let mut tasks = vec![];
 
@@ -54,10 +54,8 @@ async fn main() {
                 stream.read_exact(&mut buf).await.unwrap();
                 sleep(Duration::from_millis(msg_interval)).await;
 
-                let multiplication_result = buf.clone();
-
                 for i in 0..MSG_SIZE {
-                    rand[i] = msg[i] ^ multiplication_result[i];
+                    rand[i] = msg[i] ^ buf[i];
                 }
 
                 // return rand
@@ -73,7 +71,6 @@ async fn main() {
                 }
 
                 assert_eq!(&buf, &[0u8; MSG_SIZE]);
-                sleep(Duration::from_millis(msg_interval)).await;
             }
         }));
 

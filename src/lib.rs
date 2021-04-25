@@ -6,7 +6,7 @@ use tokio::{
     net::TcpStream,
 };
 
-pub const MSG_SIZE: usize = 8;
+pub const MSG_SIZE: usize = 1024;
 
 #[repr(transparent)]
 pub struct Actor {
@@ -41,13 +41,11 @@ impl Actor {
             };
             total_msg_counter.fetch_add(1, Ordering::SeqCst);
 
-            let mut multiplication_result = [0u8; MSG_SIZE];
-
             for i in 0..MSG_SIZE {
-                multiplication_result[i] = buf[i] ^ self.rand[i];
+                buf[i] = buf[i] ^ self.rand[i];
             }
 
-            socket.write_all(&multiplication_result).unwrap();
+            socket.write_all(&buf).unwrap();
             total_msg_counter.fetch_add(1, Ordering::SeqCst);
 
             match socket.read(&mut buf) {
@@ -95,13 +93,11 @@ impl Actor {
             };
             total_msg_counter.fetch_add(1, Ordering::SeqCst);
 
-            let mut multiplication_result = [0u8; MSG_SIZE];
-
             for i in 0..MSG_SIZE {
-                multiplication_result[i] = buf[i] ^ self.rand[i];
+                buf[i] = buf[i] ^ self.rand[i];
             }
 
-            socket.write_all(&multiplication_result).await.unwrap();
+            socket.write_all(&buf).await.unwrap();
             total_msg_counter.fetch_add(1, Ordering::SeqCst);
 
             match socket.read(&mut buf).await {
