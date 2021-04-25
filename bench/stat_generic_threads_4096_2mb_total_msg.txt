@@ -1,2 +1,0 @@
-ThreadsTotalMsgs: 0
-ThreadsTotalConn: 0

@@ -1,2 +1,0 @@
-ThreadsTotalMsgs: 38288
-ThreadsTotalConn: 0

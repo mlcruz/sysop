@@ -1,7 +1,0 @@
-# started on Sun Apr 25 14:19:16 2021
-
-1859322633,,cycles,713832004,100.00,,
-1919092647,,instructions,713832004,100.00,1.03,insn per cycle
-66728210,,bus-cycles,713832004,100.00,,
-25056716,,cache-references,713832004,100.00,,
-7710252,,cache-misses,713832004,100.00,30.771,of all cache refs
