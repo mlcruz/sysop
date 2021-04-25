@@ -1,4 +1,0 @@
-TaskTotalMsgs,2015414
-TaskTotalConn,24889
-TaskTotalMsgs,467095
-TaskTotalConn,12028

@@ -1,5 +1,6 @@
 use std::{iter::repeat_with, sync::atomic::AtomicUsize, time::Duration};
 
+use std::sync::atomic::*;
 use sysop::MSG_SIZE;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -22,9 +23,14 @@ async fn main() {
 
     let mut tasks = vec![];
 
-    while CONNECTIONS.load(std::sync::atomic::Ordering::SeqCst) < connection_count {
+    while CONNECTIONS.load(Ordering::SeqCst) < connection_count {
         tasks.push(tokio::spawn(async move {
-            let mut stream = TcpStream::connect("127.0.0.1:9999").await.unwrap();
+            let stream = TcpStream::connect("127.0.0.1:9999").await;
+            if stream.is_err() {
+                CONNECTIONS.swap(connection_count + 1, Ordering::SeqCst);
+                return;
+            };
+            let mut stream = stream.unwrap();
             CONNECTIONS.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
             let mut buf = [0u8; MSG_SIZE];
             let mut rand = [0u8; MSG_SIZE];
