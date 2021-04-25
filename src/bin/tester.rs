@@ -19,7 +19,7 @@ async fn main() {
 
     let connection_count = args[1].parse::<usize>().unwrap();
 
-    let msg_interval = 100;
+    let msg_interval = 500;
 
     let mut tasks = vec![];
 
@@ -74,7 +74,7 @@ async fn main() {
             }
         }));
 
-        sleep(Duration::from_micros(100)).await;
+        sleep(Duration::from_millis(5)).await;
     }
 
     futures::future::join_all(tasks).await;

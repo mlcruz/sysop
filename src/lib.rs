@@ -31,7 +31,8 @@ impl Actor {
         total_msg_counter: &AtomicU64,
     ) {
         let mut buf = [0u8; MSG_SIZE];
-        let rand_block_idx = fastrand::usize(0..HEAP_MULT - 1);
+        let rand_block_idx = fastrand::usize(0..HEAP_MULT);
+        let mut alloc_1mb: Vec<[u8; MSG_SIZE]> = vec![[0; MSG_SIZE]; HEAP_MULT];
 
         loop {
             match socket.read(&mut buf) {
@@ -47,8 +48,6 @@ impl Actor {
             for i in 0..MSG_SIZE {
                 buf[i] = buf[i] ^ self.rand[i];
             }
-
-            let mut alloc_1mb: Vec<[u8; MSG_SIZE]> = vec![[0; MSG_SIZE]; HEAP_MULT];
 
             alloc_1mb[rand_block_idx] = buf;
             socket.write_all(&alloc_1mb[rand_block_idx]).unwrap();
@@ -76,7 +75,6 @@ impl Actor {
 
             socket.write_all(&[0u8; MSG_SIZE]).unwrap();
             total_msg_counter.fetch_add(1, Ordering::SeqCst);
-            std::mem::drop(alloc_1mb);
         }
     }
 
@@ -88,7 +86,9 @@ impl Actor {
         total_msg_counter: &AtomicU64,
     ) {
         let mut buf = [0u8; MSG_SIZE];
-        let rand_block_idx = fastrand::usize(0..HEAP_MULT - 1);
+        let rand_block_idx = fastrand::usize(0..HEAP_MULT);
+        let mut alloc_1mb: Vec<[u8; MSG_SIZE]> = vec![[0; MSG_SIZE]; HEAP_MULT];
+
         loop {
             match socket.read(&mut buf).await {
                 // closed
@@ -104,7 +104,6 @@ impl Actor {
                 buf[i] = buf[i] ^ self.rand[i];
             }
 
-            let mut alloc_1mb: Vec<[u8; MSG_SIZE]> = vec![[0; MSG_SIZE]; HEAP_MULT];
             alloc_1mb[rand_block_idx] = buf;
             socket.write_all(&alloc_1mb[rand_block_idx]).await.unwrap();
 
@@ -132,7 +131,6 @@ impl Actor {
 
             socket.write_all(&[0u8; MSG_SIZE]).await.unwrap();
             total_msg_counter.fetch_add(1, Ordering::SeqCst);
-            std::mem::drop(alloc_1mb);
         }
     }
 }
