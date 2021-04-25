@@ -1,0 +1,14 @@
+ThreadsTotalMsgs: 892
+ThreadsTotalConn: 0
+ThreadsTotalMsgs: 342
+ThreadsTotalConn: 0
+ThreadsTotalMsgs: 890
+ThreadsTotalConn: 0
+ThreadsTotalMsgs: 888
+ThreadsTotalConn: 0
+ThreadsTotalMsgs: 890
+ThreadsTotalConn: 0
+ThreadsTotalMsgs: 890
+ThreadsTotalConn: 0
+ThreadsTotalMsgs: 888
+ThreadsTotalConn: 0

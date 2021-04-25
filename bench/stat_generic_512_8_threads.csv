@@ -1,0 +1,44 @@
+# started on Sat Apr 24 23:44:28 2021
+
+3150613928,,cycles,3804600781,100.00,,
+1386370423,,instructions,3804600781,100.00,0.44,insn per cycle
+289253846,,bus-cycles,3804600781,100.00,,
+159579554,,cache-references,3804600781,100.00,,
+12072114,,cache-misses,3804600781,100.00,7.565,of all cache refs
+# started on Sat Apr 24 23:44:45 2021
+
+8338153980,,cycles,9451832604,100.00,,
+3763889509,,instructions,9451832604,100.00,0.45,insn per cycle
+780596989,,bus-cycles,9451832604,100.00,,
+1310,,page-faults,8596783799,100.00,,
+225604,,cs,8596783799,100.00,,
+# started on Sat Apr 24 23:45:20 2021
+
+1049653812,,dTLB-loads,9705779790,100.00,,
+9403617,,dTLB-load-misses,9705779790,100.00,0.90,of all dTLB cache hits
+624420504,,dTLB-stores,9705779790,100.00,,
+1543393,,dTLB-stores-misses,9705779790,100.00,,
+# started on Sat Apr 24 23:45:55 2021
+
+1306,,faults,8647065441,100.00,,
+1306,,minor-faults,8647065441,100.00,,
+0,,major-faults,8647065441,100.00,,
+778990431,,branch-instructions,9267583573,100.00,,
+35199340,,branch-misses,9267583573,100.00,4.52,of all branches
+# started on Sat Apr 24 23:46:30 2021
+
+7814441118,,cycles,8222250869,75.59,,
+3485037926,,instructions,9563181788,87.92,0.45,insn per cycle
+50153880,,LLC-loads,9507059321,87.40,,
+7615059,,LLC-load-misses,9113888739,83.79,15.18,of all LL-cache hits
+10346778,,LLC-stores,3133150464,28.81,,
+382140383,,cache-references,4879738953,44.86,,
+29313225,,cache-misses,6707418835,61.67,7.671,of all cache refs
+# started on Sat Apr 24 23:47:06 2021
+
+1052758187,,L1-dcache-loads,8193346604,79.43,,
+124377606,,L1-dcache-load-misses,8286982257,80.34,11.81,of all L1-dcache hits
+625737453,,L1-dcache-stores,8341919776,80.87,,
+<not supported>,,L1-dcache-store-misses,0,100.00,,
+395735947,,cache-references,7950735806,77.08,,
+26552383,,cache-misses,8487147945,82.28,6.710,of all cache refs

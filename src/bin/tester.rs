@@ -8,8 +8,8 @@ use tokio::{
     time::sleep,
 };
 
-static CONNECTIONS: AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
-
+static CONNECTIONS: AtomicUsize = AtomicUsize::new(0);
+static CANCELATION: AtomicBool = AtomicBool::new(false);
 #[tokio::main]
 #[allow(arithmetic_overflow)]
 async fn main() {
@@ -19,15 +19,19 @@ async fn main() {
 
     let connection_count = args[1].parse::<usize>().unwrap();
 
-    let msg_interval = 100;
+    let msg_interval = 25;
 
     let mut tasks = vec![];
 
     while CONNECTIONS.load(Ordering::SeqCst) < connection_count {
+        if CANCELATION.load(Ordering::SeqCst) == true {
+            break;
+        }
+
         tasks.push(tokio::spawn(async move {
             let stream = TcpStream::connect("127.0.0.1:9999").await;
             if stream.is_err() {
-                CONNECTIONS.swap(connection_count + 1, Ordering::SeqCst);
+                CANCELATION.swap(true, Ordering::SeqCst);
                 return;
             };
             let mut stream = stream.unwrap();
@@ -64,14 +68,13 @@ async fn main() {
                 sleep(Duration::from_millis(msg_interval)).await;
 
                 if buf.first().unwrap() == &255u8 {
+                    CANCELATION.swap(true, Ordering::SeqCst);
                     break;
                 }
 
                 assert_eq!(&buf, &[0u8; MSG_SIZE]);
                 sleep(Duration::from_millis(msg_interval)).await;
             }
-
-            CONNECTIONS.fetch_sub(1, std::sync::atomic::Ordering::SeqCst);
         }));
 
         sleep(Duration::from_micros(100)).await;
