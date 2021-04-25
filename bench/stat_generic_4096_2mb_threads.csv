@@ -1,0 +1,7 @@
+# started on Sun Apr 25 14:12:46 2021
+
+2585565,,cycles,1493175,100.00,,
+1763259,,instructions,1493175,100.00,0.68,insn per cycle
+133256,,bus-cycles,1493175,100.00,,
+99426,,cache-references,1493175,100.00,,
+34331,,cache-misses,1493175,100.00,34.529,of all cache refs

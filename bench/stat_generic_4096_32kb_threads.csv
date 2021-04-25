@@ -1,0 +1,7 @@
+# started on Sun Apr 25 14:17:50 2021
+
+1734003186,,cycles,1910052237,100.00,,
+783784344,,instructions,1910052237,100.00,0.45,insn per cycle
+160429264,,bus-cycles,1910052237,100.00,,
+107292219,,cache-references,1910052237,100.00,,
+8626848,,cache-misses,1910052237,100.00,8.041,of all cache refs
