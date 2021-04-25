@@ -6,7 +6,7 @@ use tokio::{
     net::TcpStream,
 };
 
-pub const MSG_SIZE: usize = 1024;
+pub const MSG_SIZE: usize = 4096 * 8;
 
 #[repr(transparent)]
 pub struct Actor {

@@ -1,0 +1,14 @@
+ThreadsTotalMsgs: 201700
+ThreadsTotalConn: 0
+ThreadsTotalMsgs: 546235
+ThreadsTotalConn: 32
+ThreadsTotalMsgs: 555567
+ThreadsTotalConn: 1
+ThreadsTotalMsgs: 550286
+ThreadsTotalConn: 0
+ThreadsTotalMsgs: 554585
+ThreadsTotalConn: 0
+ThreadsTotalMsgs: 545860
+ThreadsTotalConn: 0
+ThreadsTotalMsgs: 544968
+ThreadsTotalConn: 0
