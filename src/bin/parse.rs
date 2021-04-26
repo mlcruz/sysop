@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
 use std::{error::Error, fs::*, u128};
 use std::{io::Read, path::PathBuf};
+use sysop::MergedBenchResult;
 
 #[derive(Debug, Clone, Default)]
 struct BenchResult {
@@ -32,35 +32,6 @@ struct BenchResult {
 struct MsgCount {
     counts: Vec<u128>,
     path: PathBuf,
-}
-
-#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
-struct MergedBenchResult {
-    msg_size: String,
-    connections: u128,
-    kind: String,
-    counts: u128,
-    cycles: u128,
-    instructions: u128,
-    faults: u128,
-    minor_faults: u128,
-    major_faults: u128,
-    bus_cycles: u128,
-    d_tlb_loads: u128,
-    d_tlb_load_misses: u128,
-    llc_loads: u128,
-    llc_load_misses: u128,
-    l1_cache_loads: u128,
-    l1_cache_load_misses: u128,
-    l1_cache_stores: u128,
-    llc_stores: u128,
-    cache_references: u128,
-    cache_misses: u128,
-    branch_instructions: u128,
-    d_tlb_stores: u128,
-    d_tlb_store_misses: u128,
-    branch_misses: u128,
-    context_switches: u128,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {

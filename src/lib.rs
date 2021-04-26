@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use std::io::Write;
 use std::sync::atomic::*;
 use std::{convert::TryInto, io::Read, iter::repeat_with};
@@ -133,4 +134,32 @@ impl Actor {
             total_msg_counter.fetch_add(1, Ordering::SeqCst);
         }
     }
+}
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+pub struct MergedBenchResult {
+    pub msg_size: String,
+    pub connections: u128,
+    pub kind: String,
+    pub counts: u128,
+    pub cycles: u128,
+    pub instructions: u128,
+    pub faults: u128,
+    pub minor_faults: u128,
+    pub major_faults: u128,
+    pub bus_cycles: u128,
+    pub d_tlb_loads: u128,
+    pub d_tlb_load_misses: u128,
+    pub llc_loads: u128,
+    pub llc_load_misses: u128,
+    pub l1_cache_loads: u128,
+    pub l1_cache_load_misses: u128,
+    pub l1_cache_stores: u128,
+    pub llc_stores: u128,
+    pub cache_references: u128,
+    pub cache_misses: u128,
+    pub branch_instructions: u128,
+    pub d_tlb_stores: u128,
+    pub d_tlb_store_misses: u128,
+    pub branch_misses: u128,
+    pub context_switches: u128,
 }

@@ -13,6 +13,7 @@ lazy_static = "1.4.0"
 futures = "0.3.14"
 serde = {version = "1.0.125", features =["derive"]}
 csv = "1.1"
+plotters = "0.3.0"
 
 
 [profile.release]
