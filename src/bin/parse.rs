@@ -291,9 +291,9 @@ fn merge_bench_result(
     for bench in bench_result_values {
         let msg_count = msg_result_values
             .iter()
-            .find(|i| i.0 == bench.0 && i.1 == bench.1 || i.2 == bench.2);
+            .find(|i| i.0 == bench.0 && i.1 == bench.1 && i.2 == bench.2);
 
-        let bench_result = bench.3;
+        let bench_result = bench.3.clone();
 
         let mut counts = msg_count.unwrap().3.counts.clone();
 
