@@ -6,24 +6,28 @@ b_tasks = benchmarks[benchmarks["kind"] == "tasks"]
 
 benchmarks["virtual_memory"] = benchmarks["msg_size"]
 
-stack_size = 8 * 1024 * 1024
-tmp = []
-for (idx,msg_size) in enumerate(benchmarks["connections"]):
+stack_size = 2 * 1024 * 1024
+tmp_vm = []
+tmp_rm = []
+
+for (idx,msg_size) in enumerate(benchmarks["msg_size"]):
     is_thread = benchmarks["kind"][idx] == "threads"
     num_msg_size = 0
-
     if(msg_size == "512kb"):
         num_msg_size = 512 * 1024
     else:
         num_msg_size = int(msg_size)
 
     if(is_thread):
-        tmp.append((msg_size * benchmarks["connections"][idx]) + benchmarks["connections"][idx] * stack_size)
+        tmp_vm.append((num_msg_size * benchmarks["connections"][idx]) + (benchmarks["connections"][idx] * stack_size) + (206228 * 1024))
+        tmp_rm.append((1024 * 1024) + (num_msg_size * benchmarks["connections"][idx]) + (benchmarks["connections"][idx] * 4086))
     else:
-        tmp.append(msg_size * benchmarks["connections"][idx]) + (275764 * 1024 * 1024)
+        tmp_vm.append(num_msg_size * benchmarks["connections"][idx]  + (275764 * 1024))
+        tmp_rm.append((1024 * 1632) + (num_msg_size * benchmarks["connections"][idx]))
 
-benchmarks["virtual_memory"] = tmp
-# msg_filtered =benchmarks[benchmarks["msg_size"] == "512kb"]
+benchmarks["virtual_memory"] = tmp_vm
+benchmarks["reserved_memory"] = tmp_rm
+msg_filtered = benchmarks[benchmarks["msg_size"] == "512kb"]
 
 
 # connections = msg_filtered[msg_filtered["kind"] == "threads"].reset_index(drop=True).filter(items=["connections"])
@@ -34,8 +38,7 @@ benchmarks["virtual_memory"] = tmp
 # connections["tasks"] = msg_filtered[msg_filtered["kind"] == "tasks"].reset_index(drop=True).filter(items=filter_items)
 
 # # connections.plot(x="connections").autoscale()
-benchmarks["virtual_memory"]
-
+msg_filtered[msg_filtered["kind"] == "threads"].filter(items=["connections", "virtual_memory", "reserved_memory"])
 
 
 
