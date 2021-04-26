@@ -1,1 +1,41 @@
-Total msgs: 34
+benchmarks = pd.read_csv("benchmarks.csv")
+benchmarks["ipc"] =  benchmarks["instructions"] / benchmarks["cycles"] 
+
+b_threads = benchmarks[benchmarks["kind"] == "threads"]
+b_tasks = benchmarks[benchmarks["kind"] == "tasks"]
+
+benchmarks["virtual_memory"] = benchmarks["msg_size"]
+
+stack_size = 8 * 1024 * 1024
+tmp_vm = []
+for (idx,msg_size) in enumerate(benchmarks["connections"]):
+    is_thread = benchmarks["kind"][idx] == "threads"
+    num_msg_size = 0
+
+    if(msg_size == "512kb"):
+        num_msg_size = 512 * 1024
+    else:
+        num_msg_size = int(msg_size)
+
+    if(is_thread):
+        tmp_vm.append((msg_size * benchmarks["connections"][idx]) + benchmarks["connections"][idx] * stack_size) + (206228 * 1024 * 1024)
+    else:
+        tmp_vm.append(msg_size * benchmarks["connections"][idx]) + (275764 * 1024 * 1024)
+
+benchmarks["virtual_memory"] = tmp_vm
+# msg_filtered =benchmarks[benchmarks["msg_size"] == "512kb"]
+
+
+# connections = msg_filtered[msg_filtered["kind"] == "threads"].reset_index(drop=True).filter(items=["connections"])
+
+# filter_items = ["context_switches"]
+
+# connections["threads"] = msg_filtered[msg_filtered["kind"] == "threads"].reset_index(drop=True).filter(items=filter_items)
+# connections["tasks"] = msg_filtered[msg_filtered["kind"] == "tasks"].reset_index(drop=True).filter(items=filter_items)
+
+# # connections.plot(x="connections").autoscale()
+benchmarks["virtual_memory"]
+
+
+
+
