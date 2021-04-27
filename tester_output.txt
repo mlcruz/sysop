@@ -1,44 +1,160 @@
-benchmarks = pd.read_csv("benchmarks.csv")
-benchmarks["ipc"] =  benchmarks["instructions"] / benchmarks["cycles"] 
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
 
-b_threads = benchmarks[benchmarks["kind"] == "threads"]
-b_tasks = benchmarks[benchmarks["kind"] == "tasks"]
+\usepackage{graphicx,url}
 
-benchmarks["virtual_memory"] = benchmarks["msg_size"]
-
-stack_size = 2 * 1024 * 1024
-tmp_vm = []
-tmp_rm = []
-
-for (idx,msg_size) in enumerate(benchmarks["msg_size"]):
-    is_thread = benchmarks["kind"][idx] == "threads"
-    num_msg_size = 0
-    if(msg_size == "512kb"):
-        num_msg_size = 512 * 1024
-    else:
-        num_msg_size = int(msg_size)
-
-    if(is_thread):
-        tmp_vm.append((num_msg_size * benchmarks["connections"][idx]) + (benchmarks["connections"][idx] * stack_size) + (206228 * 1024))
-        tmp_rm.append((1024 * 1024) + (num_msg_size * benchmarks["connections"][idx]) + (benchmarks["connections"][idx] * 4086))
-    else:
-        tmp_vm.append(num_msg_size * benchmarks["connections"][idx]  + (275764 * 1024))
-        tmp_rm.append((1024 * 1632) + (num_msg_size * benchmarks["connections"][idx]))
-
-benchmarks["virtual_memory"] = tmp_vm
-benchmarks["reserved_memory"] = tmp_rm
-msg_filtered = benchmarks[benchmarks["msg_size"] == "512kb"]
+\title{Estudo em profundidade sobre sobre programação concorrente: Uma breve análise 
+sobre algumas abordagens modernas para programação concorrente e assíncrona.}
+\author {Matheus Leite Cruz}
+\date{25 de Março de 2021}
+\usepackage[brazilian]{babel}
+\usepackage{lscape}
+\usepackage[section]{placeins}
+\usepackage[num]{abntex2cite}
+\citebrackets[]
 
 
-# connections = msg_filtered[msg_filtered["kind"] == "threads"].reset_index(drop=True).filter(items=["connections"])
+\begin{document}
 
-# filter_items = ["context_switches"]
+\maketitle
 
-# connections["threads"] = msg_filtered[msg_filtered["kind"] == "threads"].reset_index(drop=True).filter(items=filter_items)
-# connections["tasks"] = msg_filtered[msg_filtered["kind"] == "tasks"].reset_index(drop=True).filter(items=filter_items)
+\tableofcontents 
 
-# # connections.plot(x="connections").autoscale()
-msg_filtered[msg_filtered["kind"] == "threads"].filter(items=["connections", "virtual_memory", "reserved_memory"])
+\section{Introdução}
+
+Hoje em dia é cada vez mais comum que sistemas operem de maneira concorrente e possivelmente assíncrona. Ao longo primeiro trabalho da disciplina comparamos as abordagens dos servidores web apache (threads) e nginx (loop de eventos com epool) para operar concorrentemente com um grande numero de conexões. 
+
+O objetivo desse trabalho é tentar mensurar do ponto de vista da memoria a diferença entre threads por conexão e uma abordagem por loops de eventos utilizando epoll e \emph{cooperative multitasking}.
+
+\section{Metodologia}
+Para a realização do trabalho foram implementados de dois programas que funcionam de maneira similar à servidores web. Um deles foi implementado utilizando a abordagem de criar uma thread por conexão, e o outro utilizando a interface epoll e um loop de eventos para criar uma 'task' por conexão. Também foi implementado um programa testador, que abre um numero especificado de conexões e troca mensagens pré definidas com os programas de threads e tasks.
+
+Utilizando o software para análise de performance \emph{perf} foi medida a ocorrência de diversos eventos relacionados a performance e uso de recursos de ambas as implementações, variando a tamanho das mensagens enviadas pelo testador e o numero total de conexões abertas ao longo de diversas execuções. 
+
+\subsection{Implementação}
+Com o intuito de entender e controlar ao máximo possível o fluxo execução do programas, foi preferível implementar ambos os programas de teste(em vez de utilizar softwares já existentes, como por exemplo apache e nginx). Os programas foram implementados na linguagem rust, e tem exatamente o mesmo funcionamento, alterando somente a escolha do modelo de concorrência.
+
+Foi utilizada a função std::thread::spawn da biblioteca padrão da linguagem para criar as threads. No caso do loop de eventos, foi utilizado o framework para operações assíncronas tokio, que fornece a leitura de sockets não bloqueantes por meio de epoll, além de um escalonador próprio para as funções assíncronas e a abstração de tasks. 
+  
+Os programas e o testador funcionam da seguinte maneira:
+\begin{enumerate}
+\item Ao inicializar, o servidor começa a 'escutar' em uma porta do host, esperando conexões tcp via socket. 
+\item Ao receber uma nova conexão:
+\item O servidor cria uma struct 'Actor' com um campo 'data' contendo uma vetor de bytes aleatórios com N elementos e um campo 'id' com N elementos (até 4096). A struct Actor tem a si métodos associados a ela para realizar o gerenciamento das conexões
+\item Na implementação utilizando threads, uma nova thread é criada para gerenciar a conexão utilizando o Actor. Na versão utilizando tasks/epoll uma nova task é criada para tal. Nesse ponto, a thread principal do servidor volta a esperar novas conexões.
+\item O testador então envia uma mensagem de N bytes (o mesmo tamanho do vetor de bytes do Actor)
+\item O Actor (em sua própria thread ou task) lé do socket a mensagem enviada pelo testador (utilizando 'data como buffer), e realiza um xor com os primeiros 4096 bytes de seu vetor aleatório, salvando o resultado em seu buffer 'data' (no caso de N > 4096, em uma posição aleatória de seu buffer data). 
+\subitem Utilizamos somente os primeiros 4096 bytes para não sobrecarregar a cpu do computador (e não conseguir medir o uso de memoria). Por exemplo no caso de uma mensagem de tamanho 512kB, um vetor de 512kB é alocado por conexão, mas só é realizado os xor dos primeiros 4096.
+\item O Actor envia o resultado do xor de volta para o testador. 
+\item O testador realiza um xor entre a mensagem enviada e a recebida pelo servidor. O resultado deve ser igual ao campo 'id' do Actor que está recebendo a conexão.
+\item O testador envia o resultado do xor de volta para o servidor.
+\item O servidor confirma que a mensagem enviada pelo testador é igual ao 'id' do actor que recebeu a conexão
+\end{enumerate}
+
+O testador cria um numero pre determinado de conexões e envia uma mensagem por conexão a cada 100ms, realizando um ciclo completo a cada 500ms. Sem contar threads, tasks e o necessário para o escalonador(no caso de tasks) somente alocamos memoria na instanciação de cada Actor, sendo então possível estimar o uso de memoria do programa a partir do numero de conexões com relativa precisão.
+
+\subsection{Benchmarks}
+Utilizando o software perf, foram realizadas centenas de medições com diversas configurações de numero de conexões e tamanho de mensagem diferentes para cada implementação. Como só é possível observar de somente 5 tipos de evento por vez por execução do perf, cada configuração foi executada cerca de 10 vezes durante 30 segundos (para cada implementação) utilizando parâmetros de eventos diferentes, e a média de seus resultados foi utilizada para chegar ao resultado final da configuração.
+
+Foram realizadas medições utilizando 1, 2, 4, 8, 16, 64, 128, 256, 512, 1028, 2048, 4096, 8192, 12228, 16384 e 24576 (quando possível) conexões, com tamanhos de mensagem (em bytes) 8, 1024, 4096 e 512k, para um total de 112 configurações diferentes. Os resultados foram consolidados em um único csv para análise. É Bom notar que cada Actor vai alocar um vetor de tamanho N para utilizar como buffer para receber as mensagens, utilizando um total de conexões * tamanho\_mensagem memoria.
+
+\newpage
+
+\section{Resultados}
+
+No primeiro trabalho da disciplina, com o intuito de exemplificar problemas de paralelismo utilizando threads, foram listadas as seguintes desvantagens do apache web server criar uma thread por conexão:
+
+\begin{enumerate}
+\item Por padrão, cada thread tem sua área de memoria para sua pilha (stack). O tamanho da pilha é configurável, mas alterações em seu tamanho padrão podem ter resultados desagradáveis (como por exemplo um limite de recursão menor). Considerando que tamanho de pilha padrão nos sistemas operacionais modernos é de 2MB, um computador com 8GB seria capaz de suportar somente 4.000 conexões simultâneas.
+
+\item Dada a grande quantidade de threads, a quantidade de tempo perdida em trocas de contexto tende a ser extremamente alta, já que o número de threads é muito superior ao número de cores do processador. Além disso a necessidade do compartilhamento e sincronização de recursos (incluindo operações bloqueantes) entre milhares de threads aumenta muito a chance de possíveis deadlocks. 
+
+\item A eficiência do cache do processador é prejudicada. Em uma situação de múltiplas threads por core, cache misses vão ser muito mais comuns principalmente pela questão da pilha das threads ocupar uma quantidade relativamente grande de memoria. 
+
+\end{enumerate}
+
+Levando em consideração os conceitos apresentados na disciplina, o objetivo é utilizar os dados coletados para verificar (ou não) essas e outras afirmações.
+
+\subsection{Numero de conexões é limitado pelo tamanho da pilha das threads}
+Conforme mostra a figura \ref{tvm} o numero de conexões não é limitado pelo quantidades de threads criadas. A criação das threads envolve a alocação de memoria virtual. Ao ser criada cada thread vai receber sob demanda somente o numero de páginas necessárias. Sendo assim, por mais que cada thread chegue a endereçar no mínimo 2MB, isso não chega a limitar o numero total de threads (pelo menos em sistemas 64bit). É de nota que em sistemas antigos 32bit o espaço limitado de endereçamento ainda é um limite para a quantidade de memoria virtual disponível.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{thread_vm.jpg}
+\caption{Comparação entre memoria virtual e utilizada - threads}
+\label{tvm}
+\end{figure}
+\newpage
+
+\subsection{Trocas de contexto aumentam com o número total de threads}
+Conforme mostra a figura 2 é possível notar que a quantidade de trocas de contexto é diretamente proporcional ao número de conexões na abordagem utilizando threads. Considerando que uma troca de contexto (de thread) ocorre ao trocar a thread em execução, esse resultado não é surpreendente.
+
+\begin{figure}[h]
+\centering
+\label{tcs}
+\includegraphics[width=\textwidth]{task_thread_cs.jpg}
+\caption{Comparação entre quantidade de trocas de contexto - Threads e Tasks}
+\end{figure}
+\newpage
+
+\subsection{Muitas threads prejudicam a localidade e eficiência do cache do processador}
+Conforme podemos observar nas figuras a seguir, a implementação utilizando tasks apresentou uma taxa de cache misses menor do que a utilizando threads em quase todos os cenários.
+
+\begin{itemize}
+\item A taxa de misses do cache de nível (figura 4) é consistentemente maior na implementação utilizando threads. É possível notar que conforme o tamanho da mensagem tende ao tamanho de página o delta entre as implementações aumenta, mas no geral se mantém constante conforme aumenta o numero de conexões. A diferença entre a performance das implementações nesse caso talvez possa ser explicada pelo fato de que o cache L1 do processador tem apenas 32kB (figura 3) de memoria, e cada thread vai ocupar no mínimo uma página de 4kB. Tasks possivelmente podem dividir a mesma página, o que pode resultar em uma taxa de cache misses menor. 
+
+\item A taxa de misses do cache de nível 3 (figura 5) é maior na implementação utilizando threads em quase todos os casos, mas o delta diminui conforme o tamanho da mensagem aumenta. Não foi possivel encontrar nenhuma explicação para tal comportamento
+
+\item A taxa de misses da TLB (dTlb é a tlb de dados nos processadores intel) foi consistentemente maior na implementação utilizando threads (figura 6). Uma possível explicação para tal comportamento é o fato de que a implementação utilizando threads requer significantemente mais páginas do que a implementação utilizando tasks.
+
+\item O número de minor page faults (figura 7) é uma das métricas mais interessantes do experimento. Em cenários onde o tamanho da mensagem é menor, podemos ver claramente o impacto de cada thread reservar no mínimo uma página. A implementação utilizando tasks permite que múltiplos Actors sejam armazenados em uma mesma página, o que não é possível na implementação com threads. É possível notar que conforme o tamanho das mensagens aumenta, cada task fica mais próxima de necessitar de no mínimo uma página, reduzindo o delta entra as implementações. 
+\end{itemize}
+
+Sendo assim, é possível concluir que a afirmação sobre a eficiência de cache e localidade do processador ser prejudicada pelo uso de threads (em comparação com epoll/tasks) é verdadeira para o experimento. 
+
+\pagebreak
+\begin{figure}[!h]
+\centering
+\label{cache}
+\includegraphics[width=0.3\textwidth]{cache.jpg}
+\caption{Estrutura de cache do processador - lstopo }
+\end{figure}
 
 
+\begin{figure}[!h]
+\centering
+\label{l1m}
+\includegraphics[width=0.8\textwidth]{l1_load_miss.jpg}
+\caption{Comparação entre porcentagem de load misses do cache L1 - Threads e Tasks}
+\end{figure}
 
+
+\begin{figure}[h]
+\centering
+\label{llcm}
+\includegraphics[width=\textwidth]{llc_load_miss.jpg}
+    \caption{Comparação entre porcentagem de load misses do ultimo nivel de cache - Threads e Tasks}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\label{dtlb}
+\includegraphics[width=\textwidth]{d_tlb_load_miss.jpg}
+\caption{Comparação entre porcentagem de load misses do (d)TLB - Threads e Tasks}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\label{faults}
+\includegraphics[width=\textwidth]{minor_faults.jpg}
+    \caption{Comparação entre minor page faults - Threads e Tasks}
+\end{figure}
+
+\pagebreak
+
+\section{Outro}
+
+\bibliography{bib}
+
+\end{document}

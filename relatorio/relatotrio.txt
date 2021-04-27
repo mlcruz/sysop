@@ -1,0 +1,3 @@
+Introdução:
+
+Hoje em dia é cada vez mais comum que sistemas operem de maneira concurrente e posisivelmente assincrona
